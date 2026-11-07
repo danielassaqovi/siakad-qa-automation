@@ -1,0 +1,21 @@
+{
+  "name": "siakad-qa-automation",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Automated QA suite for SIAKAD Polinema (https://siakad.polinema.ac.id) built with Playwright.",
+  "main": "src/config.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:public": "playwright test tests/public",
+    "test:auth": "playwright test tests/auth",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "report": "playwright show-report reports/html"
+  },
+  "dependencies": {
+    "@playwright/test": "1.64.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

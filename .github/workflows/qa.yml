@@ -1,0 +1,61 @@
+name: SIAKAD QA
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Setiap Senin pukul 01:00 WIB (18:00 UTC Minggu)
+    - cron: '0 18 * * 0'
+
+jobs:
+  public:
+    name: Halaman publik
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:public
+
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: laporan-publik
+          path: reports/
+          retention-days: 14
+
+  full:
+    name: Semua fitur (butuh kredensial)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    needs: public
+    if: ${{ secrets.SIAKAD_USERNAME != '' && secrets.SIAKAD_PASSWORD != '' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm test
+        env:
+          SIAKAD_USERNAME: ${{ secrets.SIAKAD_USERNAME }}
+          SIAKAD_PASSWORD: ${{ secrets.SIAKAD_PASSWORD }}
+
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: laporan-lengkap
+          path: reports/
+          retention-days: 14

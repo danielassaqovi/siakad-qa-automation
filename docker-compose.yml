@@ -1,0 +1,21 @@
+name: siakad-qa-automation
+
+services:
+  qa:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: siakad-qa-automation:latest
+    init: true
+    ipc: host
+    shm_size: "1gb"
+    environment:
+      SIAKAD_BASE_URL: ${SIAKAD_BASE_URL:-https://siakad.polinema.ac.id}
+      SIAKAD_USERNAME: ${SIAKAD_USERNAME:-}
+      SIAKAD_PASSWORD: ${SIAKAD_PASSWORD:-}
+      SIAKAD_MENU_FILTER: ${SIAKAD_MENU_FILTER:-}
+      SIAKAD_MAX_MENUS: ${SIAKAD_MAX_MENUS:-60}
+      SIAKAD_NAV_DELAY_MS: ${SIAKAD_NAV_DELAY_MS:-400}
+      HEADLESS: ${HEADLESS:-true}
+    volumes:
+      - ./reports:/app/reports
